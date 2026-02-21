@@ -5,12 +5,7 @@ export const catchAsync = (fn: RequestHandler) => {
     try{
         await fn(req, res, next)
     }   catch(err){
-    console.log(err);
-    res.status(500).json({
-        success:false,
-        message:"failed to update specility",
-        error: err instanceof Error ? err.message : 'UnKnown error'
-    })
+      next(err)
     }
  }
  

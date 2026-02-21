@@ -3,7 +3,7 @@ import { UserStatus } from "../../../generated/prisma/enums";
 import { auth } from "../../../lib/auth";
 import { prisma } from "../../../lib/prisma";
 import AppError from "../../errorHelpers/AppError";
-import { tokenUtil } from "../../utilis/token";
+import { tokenUtils } from "../../utilis/token";
 
 interface IRegisteredPatientPayload {
     name:string;
@@ -64,8 +64,31 @@ const patient = await prisma.$transaction(async (tx) => {
  
 })
 
+
+const accessToken = tokenUtils.getAccessToken({
+        userId:data.user.id,
+        email:data.user.email,
+        name:data.user.name,
+        role:data.user.role,
+        status:data.user.status,
+        isDeleted:data.user.isDeleted,
+        emailVerified:data.user.emailVerified
+    })
+
+    const refreshToken = tokenUtils.getRefreshToken({
+        userId:data.user.id,
+        email:data.user.email,
+        name:data.user.name,
+        role:data.user.role,
+        status:data.user.status,
+        isDeleted:data.user.isDeleted,
+        emailVerified:data.user.emailVerified
+    })
+
  return {
     ...data,
+    accessToken,
+    refreshToken,
     patient
  }
 }
@@ -91,7 +114,7 @@ const loginUser = async(payload:ILoginUserPayload)=>{
         throw new AppError(status.FORBIDDEN, "User is deleted")
     }
 
-    const accessToken = tokenUtil.getAccessToken({
+    const accessToken = tokenUtils.getAccessToken({
         userId:data.user.id,
         email:data.user.email,
         name:data.user.name,
@@ -101,7 +124,7 @@ const loginUser = async(payload:ILoginUserPayload)=>{
         emailVerified:data.user.emailVerified
     })
 
-    const refeshToken = tokenUtil.getRefreshToken({
+    const refreshToken = tokenUtils.getRefreshToken({
         userId:data.user.id,
         email:data.user.email,
         name:data.user.name,
@@ -113,7 +136,7 @@ const loginUser = async(payload:ILoginUserPayload)=>{
      return {
         ...data,
         accessToken,                                
-        refreshToken:refeshToken
+        refreshToken
      }
 }
 

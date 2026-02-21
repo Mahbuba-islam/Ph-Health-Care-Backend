@@ -4,6 +4,10 @@ import { catchAsync } from "../../../shared/catchAsync";
 import { sendResponse } from "../../../shared/sendResponsr";
 import status from "http-status";
 
+
+
+//create doctor controler
+
 const createDoctor = catchAsync(async (req: Request, res: Response) => {
     const doctorData = req.body
     const result = await userService.createDoctor(doctorData)
@@ -16,7 +20,24 @@ const createDoctor = catchAsync(async (req: Request, res: Response) => {
 })
 
 
+
+
+
+//create admin controler
+
+const createAdmin = catchAsync(async(req: Request, res: Response) => {
+    const payload = req.body
+    const result = await userService.createAdmin(payload)
+   sendResponse(res, {
+    success: true,
+    httpStatusCode:status.CREATED,
+    message: "Admin created successfully",
+    data: result
+   })
+})
+
 export const userController = {
-    createDoctor
+    createDoctor,
+    createAdmin
 }
 

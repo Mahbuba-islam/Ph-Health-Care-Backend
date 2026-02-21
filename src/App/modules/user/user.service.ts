@@ -3,7 +3,7 @@ import { Role, Speciality } from "../../../generated/prisma/client"
 import { auth } from "../../../lib/auth";
 import { prisma } from "../../../lib/prisma";
 import AppError from "../../errorHelpers/AppError";
-import { ICreateDoctorPayload } from "./userTypes";
+import { IcreateAdmin, ICreateDoctorPayload } from "./userTypes";
 
 const createDoctor = async (payload: ICreateDoctorPayload) => {
     
@@ -135,6 +135,98 @@ const createDoctor = async (payload: ICreateDoctorPayload) => {
 }
 
 
+
+
+// create admin and admin profile
+
+const createAdmin = async (payload: IcreateAdmin) => {
+    //chack  if admin with same email already exists
+    const existsUser = await prisma.user.findUnique({
+        where:{
+            email:payload.admin.email
+        }
+    })
+
+    if(existsUser){
+        throw new AppError(status.BAD_REQUEST, "user with same email already exists");
+    }
+
+
+
+    //create admin with betterAuth
+    const userData = await auth.api.signUpEmail({
+        body:{
+            email:payload.admin.email,
+            password:payload.password,
+            name: payload.admin.name,
+             role: Role.ADMIN,
+             needPasswordChange: true
+        }
+    })
+
+
+    //create admin profile
+    try{
+   const result = await prisma.$transaction(async(tx) => {
+     const adminData = await tx.admin.create({
+        data:{
+            userId:userData.user.id,
+            ...payload.admin
+        }
+     })
+
+
+
+      //get admin wuth user data
+    const admin = await prisma.admin.findUnique({
+        where:{
+            id: adminData.id
+        },
+        select:{
+            user:{
+                select:{
+                    id:true,
+                    email:true,
+                    name:true,
+                }
+            }
+        }
+
+    })
+
+    return admin
+
+
+   })
+   return result
+    }
+
+    catch(error){
+        console.log("transaction error", error);
+        await prisma.user.delete({
+            where:{
+                id:userData.user.id
+            }
+        })
+        throw new AppError(status.INTERNAL_SERVER_ERROR, "Failed to create admin profile");
+    }
+
+    
+   
+}
+    
+
+
+
+
+
+
+
+
+
+
+
 export const userService = {
-    createDoctor
+    createDoctor,
+    createAdmin
 }

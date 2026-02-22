@@ -163,6 +163,7 @@ const createAdmin = async (payload: IcreateAdmin) => {
              needPasswordChange: true
         }
     })
+    console.log("User Data from auth:", userData)
 
 
     //create admin profile
@@ -175,29 +176,48 @@ const createAdmin = async (payload: IcreateAdmin) => {
         }
      })
 
+console.log("Payload admin:", payload.admin)
 
-
-      //get admin wuth user data
-    const admin = await prisma.admin.findUnique({
+console.log("Admin Data from DB:", adminData.id)
+    
+    const admin = await tx.admin.findUnique({
         where:{
             id: adminData.id
         },
+       
         select:{
+            id:true,
+             name:true,
+             email:true,
+            contactNumber:true,
+           profilePhoto:true,
+           createdAt:true,
+           updatedAt:true,
             user:{
                 select:{
                     id:true,
                     email:true,
                     name:true,
+                    role:true,
+                    status:true,
+                    emailVerified:true,
                 }
             }
         }
 
     })
+    console.log('admin:', admin);
 
-    return admin
+   return admin
 
 
    })
+
+
+
+
+   
+   console.log('result:', result);
    return result
     }
 

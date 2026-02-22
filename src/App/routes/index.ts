@@ -3,6 +3,7 @@ import { specialityRouter } from "../modules/speciality/speciality.router";
 import { authRoutes } from "../modules/auth/auth.router";
 import { userRouter } from "../modules/user/user.router";
 import { doctorRouter } from "../modules/doctor/doctor.route";
+import { adminRouter } from "../modules/admin/admin.router";
 
 const router = Router()
 
@@ -10,4 +11,5 @@ router.use("/specilities", specialityRouter)
 router.use("/auth", authRoutes)
 router.use("/users", userRouter)
 router.use("/doctors", doctorRouter)
+router.use("/admin", adminRouter)
 export const indexRoutes = router

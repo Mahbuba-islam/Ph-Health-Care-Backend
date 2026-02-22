@@ -10,7 +10,7 @@ export interface updateDoctorInterface{
     qualification?: string,
     currentWorkingPlace?: string,
     designayion?: string,
-    specialities?:string[]
+    doctorSpecialities?:string[]
     }
     
    

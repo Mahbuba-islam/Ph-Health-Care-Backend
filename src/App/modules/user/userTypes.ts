@@ -44,3 +44,21 @@ export interface IcreateAdmin {
     }
     
 }
+
+
+
+  // create super admin interface
+export interface IcreateSuperAdmin {
+    password: string;
+    admin:{
+    name: string;
+    email: string;
+    profilePhoto?: string;
+    contactNumber?: string;
+    isDeleted?: boolean;
+    deletedAt?: Date
+    
+
+    }
+    
+}

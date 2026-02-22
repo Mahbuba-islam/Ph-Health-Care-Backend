@@ -93,7 +93,7 @@ const updateDoctor = async(id:string, payload:updateDoctorInterface) => {
     }
 
     //seperate specialities from doctor data
-   const {specialities, ...doctorData} = payload
+   const {doctorSpecialities, ...doctorData} = payload
 
    //update doctor basic information
    const updatedDoctor = await prisma.doctor.update({
@@ -109,7 +109,7 @@ const updateDoctor = async(id:string, payload:updateDoctorInterface) => {
     })
 
     // if specialities provided , update them seperately
-    if(specialities && specialities.length>0){
+    if(doctorSpecialities && doctorSpecialities.length>0){
         //delete old specialities
         await prisma.doctorSpeciality.deleteMany({
             where:{
@@ -118,7 +118,7 @@ const updateDoctor = async(id:string, payload:updateDoctorInterface) => {
         })
 
         //add new specialities
-        const specialitiesData = specialities.map(specilityId => ({
+        const specialitiesData = doctorSpecialities.map(specilityId => ({
              doctorId:id,
              specilityId
         }))
@@ -131,17 +131,50 @@ const updateDoctor = async(id:string, payload:updateDoctorInterface) => {
 
         //fetch updated doctor with new specialities
         const result = await prisma.doctor.findUnique({
-            
+            where:{id},
+            include:{
+                doctorSpecialities:{
+                include:{
+                    specility:true
+                }
+            }}
         })
+        return {
+            ...result,
+            doctorSpecialities:result?.doctorSpecialities.map(s => s.specility)
+        }
+
 
     }
-    return updatedDoctor;
+    
+        return {
+            ...updatedDoctor,
+            DoctorSpecialities:updatedDoctor.doctorSpecialities.map(s => s.specility)
+        }
 }
 
 
 //soft delete doctor
 
 const deleteDoctor = async(id:string) => {
+    //cheack if doctor exists 
+    const doctor = await prisma.doctor.findUnique({
+        where:{
+            id
+        }
+    })
+
+    if(!doctor){
+    throw new AppError(status.NOT_FOUND, "Doctor not found")
+    }
+
+    //cheack doctor already deleted
+    if(doctor.isDeleted){
+        throw new AppError(status.BAD_REQUEST, "This doctor is already deleted");
+        
+    }
+
+    
     const sodtDeleteDoctor = await prisma.doctor.update({
         where:{id},
         data:{

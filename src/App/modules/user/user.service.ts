@@ -3,7 +3,7 @@ import { Role, Speciality } from "../../../generated/prisma/client"
 import { auth } from "../../../lib/auth";
 import { prisma } from "../../../lib/prisma";
 import AppError from "../../errorHelpers/AppError";
-import { IcreateAdmin, ICreateDoctorPayload } from "./userTypes";
+import { IcreateAdmin, ICreateDoctorPayload, IcreateSuperAdmin } from "./userTypes";
 
 const createDoctor = async (payload: ICreateDoctorPayload) => {
     
@@ -244,9 +244,77 @@ console.log("Admin Data from DB:", adminData.id)
 
 
 
+//create super admin
+const createSuperAdmin = async(payload:IcreateSuperAdmin)=>{
+  //cheack user already exists
+  const user = await prisma.user.findUnique({
+    where:{
+        email:payload.superAdmin.email
+    }
+})
+
+if(user){
+    throw new AppError(status.BAD_REQUEST, "user this email already exists")
+}
+
+
+//signup user in betterauth
+const userData = await auth.api.signUpEmail({
+    body:{
+         email:payload.superAdmin.email,
+        password:payload.password,
+        name: payload.superAdmin.name,
+        role: Role.ADMIN,
+        needPasswordChange: true
+    }
+})
+
+
+// create super admin profile with transcition
+const results = await prisma.$transaction(async(tx)=> {
+    const superAdminData = await tx.superAdmin.create({
+        data:{
+            userId:userData.user.id,
+           ...payload.superAdmin
+        }
+    })
+
+    //get super admin
+    const superAdmin = await tx.superAdmin.findUnique({
+        where:{
+            id:superAdminData.id
+        },
+
+        select:{
+            id:true,
+             name:true,
+             email:true,
+            contactNumber:true,
+           profilePhoto:true,
+           createdAt:true,
+           updatedAt:true,
+            user:{
+                select:{
+                    id:true,
+                    email:true,
+                    name:true,
+                    role:true,
+                    status:true,
+                    emailVerified:true,
+                }
+            }
+        }
+    })
+    return superAdmin
+})
+return results
+}
+
+
 
 
 export const userService = {
     createDoctor,
-    createAdmin
+    createAdmin,
+    createSuperAdmin
 }

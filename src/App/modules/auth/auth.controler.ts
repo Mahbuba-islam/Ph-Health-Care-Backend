@@ -32,7 +32,7 @@ const loginUser = catchAsync(
       sendResponse(res, {
         httpStatusCode:status.OK,
         success:true,
-        message:"Patient login successfully",
+        message:" login successfully",
         data:{
             accessToken,
             refreshToken,

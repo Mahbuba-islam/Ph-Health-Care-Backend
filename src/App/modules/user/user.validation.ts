@@ -87,7 +87,7 @@ export const createSuperAdminZodSchema = z.object({
   password: z.string("Password is required").min(8, "Password must be at least 8 characters long")
   .max(50, "Password must be less than 100 characters long"),
 
-  admin: z.object({
+  superAdmin: z.object({
     name: z.string("Name is required").min(5, "Name must be at least 5 characters long")
     .max(20, "Name must be less than 20 characters long"),
 

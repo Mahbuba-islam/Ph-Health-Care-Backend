@@ -50,7 +50,7 @@ export interface IcreateAdmin {
   // create super admin interface
 export interface IcreateSuperAdmin {
     password: string;
-    admin:{
+    superAdmin:{
     name: string;
     email: string;
     profilePhoto?: string;

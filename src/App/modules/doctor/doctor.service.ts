@@ -59,8 +59,24 @@ const getDoctorById = async (id:string) => {
             user: true,
             doctorSpecialities:{
                 include: {specility: true}
-            }
+            },
+            appointments:{
+                include:{
+                    patient:true,
+                    doctorSchedule:true,
+                    prescription:true
+                },
+             },
+             doctorSchedules:{
+                include:{
+                    schedule:true,
+
+                }
+             },
+             reviews:true
         },
+
+        
     });
     if(!doctor){
         throw new AppError(status.NOT_FOUND, "Doctors not found")

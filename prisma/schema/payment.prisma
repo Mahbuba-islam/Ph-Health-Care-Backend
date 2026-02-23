@@ -1,0 +1,15 @@
+model Payment {
+    id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    appointmentId      String        @unique @db.Uuid
+    amount             Float
+    status             PaymentStatus @default(UNPAID)
+    paymentGateWayData Json?
+    transactionId      String?       @unique
+    createdAt          DateTime      @default(now())
+    updatedAt          DateTime      @updatedAt
+
+    // Relations
+    appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+
+    @@map("payments")
+}

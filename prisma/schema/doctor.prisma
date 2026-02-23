@@ -1,5 +1,5 @@
 model Doctor {
-    id                  String             @unique @default(uuid(7))
+    id                  String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
     name                String
     email               String             @unique
     profilePhoto        String?
@@ -20,6 +20,11 @@ model Doctor {
     createdAt           DateTime           @default(now())
     updatedAt           DateTime           @updatedAt
     doctorSpecialities  DoctorSpeciality[]
+    doctorSchedules     DoctorSchedules[]
+    appointments        Appointment[]
+    reviews             Review[]
+    medicalReports      MedicalReport[]
+    prescription        Prescription[]
 
     @@index([email], name: "idx_doctor_email")
     @@index([isDeleted], name: "idx_doctor_isDeleted")
@@ -28,7 +33,7 @@ model Doctor {
 
 model DoctorSpeciality {
     id          String     @id @default(uuid(7))
-    doctorId    String
+    doctorId    String     @db.Uuid
     specilityId String
     doctor      Doctor     @relation(fields: [doctorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
     specility   Speciality @relation(fields: [specilityId], references: [id], onUpdate: Cascade, onDelete: Cascade)
@@ -37,4 +42,23 @@ model DoctorSpeciality {
     @@index([doctorId], name: "idx_doctor_speciality_doctorId")
     @@index([specilityId], name: "idx_doctor_speciality_specialityId")
     @@map("doctor_specialities")
+}
+
+model DoctorSchedules {
+    id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    doctorId   String   @db.Uuid
+    scheduleId String   @db.Uuid
+    isBooked   Boolean  @default(false)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    // Relations
+    doctor   Doctor   @relation(fields: [doctorId], references: [id])
+    schedule Schedule @relation(fields: [scheduleId], references: [id])
+
+    // An appointment is associated with this specific doctor's schedule slot
+    appointment Appointment?
+
+    @@unique([doctorId, scheduleId])
+    @@map("doctor_schedules")
 }

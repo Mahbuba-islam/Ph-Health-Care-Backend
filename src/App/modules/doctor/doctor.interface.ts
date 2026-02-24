@@ -1,16 +1,27 @@
+import { Gender } from "../../../generated/prisma/enums"
+
+export interface IUpdateDoctorSpeacilities{
+    specilityId:string,
+    shouldDelete?:boolean
+}
+
+
 export interface updateDoctorInterface{
-   
-   name?: string,
-    email?: string,
+   doctor:{
+    name?: string,
     profilePhoto?: string,
     contactNUmber?: string,
     address?: string,
     experience?: number,
+    registrationNumber?:string,
+    gender?:Gender,
     appointmentFee?: number,
     qualification?: string,
     currentWorkingPlace?: string,
     designayion?: string,
-    doctorSpecialities?:string[]
+   }
+  
+    doctorSpecialities?:IUpdateDoctorSpeacilities[]
     }
     
    

@@ -10,7 +10,7 @@ const router = Router()
 router.get("/", adminController.getAllAdmin)
 router.get("/:id", adminController.getAdminById)
 router.put("/:id", validateRequest(updateAdminValidationSchema), 
-checkAuth(Role.ADMIN, Role.DOCTOR, Role.SUPER_ADMIN), adminController.updateAdmin)
+checkAuth(Role.SUPER_ADMIN), adminController.updateAdmin)
 
-router.delete("/:id", checkAuth(Role.ADMIN, Role.DOCTOR, Role.SUPER_ADMIN), adminController.deleteAdmin)
+router.delete("/:id", checkAuth(Role.SUPER_ADMIN), adminController.deleteAdmin)
 export const adminRouter = router

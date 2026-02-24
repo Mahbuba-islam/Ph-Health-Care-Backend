@@ -65,6 +65,14 @@ export const checkAuth =
         throw new AppError(status.FORBIDDEN, "Forbidden");
       }
 
+
+       req.user = {
+        userId: user.id,
+        role:user.role,
+        email:user.email,
+
+      }
+
       // attach user to request
     //   req.user = {
     //     id: user.id,

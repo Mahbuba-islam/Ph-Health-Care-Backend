@@ -8,7 +8,8 @@ import { superAdminRouter } from "../modules/superAdmin/superAdmin.router";
 
 const router = Router()
 
-router.use("/specilities", specialityRouter)
+router.use("/specialities", specialityRouter)
+
 router.use("/auth", authRoutes)
 router.use("/users", userRouter)
 router.use("/doctors", doctorRouter)

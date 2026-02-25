@@ -7,9 +7,9 @@ import { updateAdminValidationSchema } from "./admin.validation";
 
 const router = Router()
 
-router.get("/", adminController.getAllAdmin)
-router.get("/:id", adminController.getAdminById)
-router.put("/:id", validateRequest(updateAdminValidationSchema), 
+router.get("/", checkAuth(Role.ADMIN, Role.SUPER_ADMIN), adminController.getAllAdmin)
+router.get("/:id", checkAuth(Role.ADMIN, Role.SUPER_ADMIN), adminController.getAdminById)
+router.put("/:id", checkAuth(Role.SUPER_ADMIN),  validateRequest(updateAdminValidationSchema), 
 checkAuth(Role.SUPER_ADMIN), adminController.updateAdmin)
 
 router.delete("/:id", checkAuth(Role.SUPER_ADMIN), adminController.deleteAdmin)

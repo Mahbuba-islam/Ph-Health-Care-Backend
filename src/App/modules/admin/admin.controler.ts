@@ -52,7 +52,8 @@ const updateAdmin = catchAsync(async (req, res) => {
 //soft delete admin controler
 const deleteAdmin = catchAsync(async (req, res) => {
     const { id } = req.params;
-    const adminDoctor = await adminService.markDeleteAdmin(id as string);
+    const user = req.user
+    const adminDoctor = await adminService.markDeleteAdmin(id as string, user);
     sendResponse(res, {
         httpStatusCode: status.OK,
         success: true,

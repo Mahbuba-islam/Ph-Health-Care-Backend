@@ -16,3 +16,4 @@ authControler.changePassword)
 router.post("/logOut", checkAuth(Role.ADMIN, Role.SUPER_ADMIN, Role.PATIENT, Role.DOCTOR), authControler.logOutUser)
 export const authRoutes = router
 
+router.post("/verify-email", authControler.verifyEmail)

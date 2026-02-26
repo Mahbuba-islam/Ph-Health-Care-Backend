@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import AppError from "../App/errorHelpers/AppError";
 import status from "http-status";
+
 dotenv.config();
 
 interface EnvConfig {
@@ -13,6 +14,14 @@ interface EnvConfig {
   REFRESH_TOKEN_SECRET: string;
   ACCESS_TOKEN_EXPIRY: string;
   REFRESH_TOKEN_EXPIRY: string;
+  EMAIL_SENDER:{
+    SMTP_USER:string;
+    SMTP_PASSWORD:string;
+    SMTP_HOST:string;
+    SMTP_PORT:string;
+    SMTP_FROM:string
+  }
+  
   // BETTER_AUTH_SESSION_TOKEN_EXPIRY: string;
   // BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE: string;
 }
@@ -28,6 +37,11 @@ const loadEnvVariables = (): EnvConfig => {
     "REFRESH_TOKEN_SECRET",
     "ACCESS_TOKEN_EXPIRY",
     "REFRESH_TOKEN_EXPIRY",
+    "EMAIL_SENDER_SMTP_USER",
+    "EMAIL_SENDER_SMTP_PASSWORD",
+    "EMAIL_SENDER_SMTP_HOST",
+    "EMAIL_SENDER_SMTP_PORT",
+    "EMAIL_SENDER_SMTP_FROM"
     // "BETTER_AUTH_SESSION_TOKEN_EXPIRY",
     // "BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE"
   ];
@@ -49,6 +63,13 @@ const loadEnvVariables = (): EnvConfig => {
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET as string,
     ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY as string,
     REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY as string,
+    EMAIL_SENDER:{
+      SMTP_USER:process.env.EMAIL_SENDER_SMTP_USER as string,
+    SMTP_PASSWORD:process.env.EMAIL_SENDER_SMTP_PASSWORD as string,
+    SMTP_HOST:process.env.EMAIL_SENDER_SMTP_HOST as string,
+    SMTP_PORT:process.env.EMAIL_SENDER_SMTP_PORT as string,
+    SMTP_FROM:process.env.EMAIL_SENDER_SMTP_FROM as string,
+    }
     // BETTER_AUTH_SESSION_TOKEN_EXPIRY: process.env.BETTER_AUTH_SESSION_TOKEN_EXPIRY as string,
     // BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE: process.env.BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE as string
 

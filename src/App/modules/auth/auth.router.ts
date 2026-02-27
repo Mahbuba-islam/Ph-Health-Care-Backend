@@ -22,4 +22,4 @@ router.post("/reset-password", authControler.resetPassword)
 
 router.get("/login/google", authControler.googleLogin)
 router.get("/google/success", authControler.googleLoginSuccess)
-router.get("/oauth/error", authControler.handleOauthError)
+router.get("/oauth/error", authControler.handlerOAuthError)

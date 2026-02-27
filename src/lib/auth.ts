@@ -132,6 +132,12 @@ export const auth = betterAuth({
             maxAge:60*60*24 // 1 day
         }
     },
+
+    redirectURLs:{
+   signIn:`${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success`
+    },
+
+    trustedOrigins:[envVars.BETTER_AUTH_URL || "http://localhost:5000", envVars.FRONTEND_URL],
     advanced:{
         // disableCSRFCheck:true
         useSecureCookies:false,

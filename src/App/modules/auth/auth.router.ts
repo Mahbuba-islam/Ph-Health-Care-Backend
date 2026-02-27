@@ -17,3 +17,9 @@ router.post("/logOut", checkAuth(Role.ADMIN, Role.SUPER_ADMIN, Role.PATIENT, Rol
 export const authRoutes = router
 
 router.post("/verify-email", authControler.verifyEmail)
+router.post("/forget-password", authControler.forgetPassword)
+router.post("/reset-password", authControler.resetPassword)
+
+router.get("/login/google", authControler.googleLogin)
+router.get("/google/success", authControler.googleLoginSuccess)
+router.get("/oauth/error", authControler.handleOauthError)

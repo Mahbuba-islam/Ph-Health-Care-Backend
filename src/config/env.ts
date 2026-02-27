@@ -22,6 +22,10 @@ interface EnvConfig {
     SMTP_FROM:string
   }
   
+  GOOGLE_CLIENT_ID:string
+ GOOGLE_CLIENT_SECRET:string
+ GOOGLE_CALLBACK_URL:string
+ FRONTEND_URL:string
   // BETTER_AUTH_SESSION_TOKEN_EXPIRY: string;
   // BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE: string;
 }
@@ -41,7 +45,11 @@ const loadEnvVariables = (): EnvConfig => {
     "EMAIL_SENDER_SMTP_PASSWORD",
     "EMAIL_SENDER_SMTP_HOST",
     "EMAIL_SENDER_SMTP_PORT",
-    "EMAIL_SENDER_SMTP_FROM"
+    "EMAIL_SENDER_SMTP_FROM",
+    "GOOGLE_CLIENT_ID:string",
+    "GOOGLE_CLIENT_SECRET:string",
+    "GOOGLE_CALLBACK_URL:string",
+    "FRONTEND_URL"
     // "BETTER_AUTH_SESSION_TOKEN_EXPIRY",
     // "BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE"
   ];
@@ -69,7 +77,12 @@ const loadEnvVariables = (): EnvConfig => {
     SMTP_HOST:process.env.EMAIL_SENDER_SMTP_HOST as string,
     SMTP_PORT:process.env.EMAIL_SENDER_SMTP_PORT as string,
     SMTP_FROM:process.env.EMAIL_SENDER_SMTP_FROM as string,
-    }
+   
+    },
+     GOOGLE_CLIENT_ID:process.env.GOOGLE_CLIENT_ID as string,
+   GOOGLE_CLIENT_SECRET:process.env.GOOGLE_CLIENT_SECRET as string,
+   GOOGLE_CALLBACK_URL:process.env.GOOGLE_CALLBACK_URL as string,
+   FRONTEND_URL:process.env.FRONTEND_URL as string
     // BETTER_AUTH_SESSION_TOKEN_EXPIRY: process.env.BETTER_AUTH_SESSION_TOKEN_EXPIRY as string,
     // BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE: process.env.BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE as string
 

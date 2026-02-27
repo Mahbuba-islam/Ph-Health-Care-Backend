@@ -4,9 +4,12 @@ import { prisma } from "./prisma";
 import { Role, UserStatus } from "../generated/prisma/enums";
 import { bearer, emailOTP } from "better-auth/plugins";
 import { sendEmail } from "../App/utilis/email";
+import { envVars } from "../config/env";
 
 
 export const auth = betterAuth({
+    baseURL:envVars.BETTER_AUTH_URL,
+    secret:envVars.BETTER_AUTH_SECRET,
     database: prismaAdapter(prisma, {
         provider: "postgresql", 
     }),
@@ -21,6 +24,26 @@ export const auth = betterAuth({
         autoSignInAfterVerification:true
     },
 
+    socialProviders:{
+        google:{
+            clientId:envVars.GOOGLE_CLIENT_ID,
+            clientSecret:envVars.GOOGLE_CLIENT_SECRET,
+            
+            mapProfileToUser: () => {
+                return{
+                    role:Role.PATIENT,
+                    status:UserStatus.ACTIVE,
+                    needPasswordChange:false,
+                    emailVerified:true,
+                    isDeleted:false,
+                    deletedAt:null
+                }
+            }
+        }
+    },
+   
+
+    
     user:{
         additionalFields:{
             role:{
@@ -76,6 +99,24 @@ export const auth = betterAuth({
                     })
                     }
                 }
+                else if(type === "forget-password"){
+                    const user = await prisma.user.findUnique({
+                        where:{
+                            email
+                        }
+                    })
+                    if(user){
+                        sendEmail({
+                            to:email,
+                            subject:"forget-password",
+                            templateName:"otp",
+                            templateData:{
+                                name:user.name,
+                                otp
+                            }
+                        })
+                    }
+                }
             },
 
             expiresIn: 2*60, //2 minutes in second
@@ -89,6 +130,29 @@ export const auth = betterAuth({
         cookieCache:{
             enabled:true,
             maxAge:60*60*24 // 1 day
+        }
+    },
+    advanced:{
+        // disableCSRFCheck:true
+        useSecureCookies:false,
+        cookies:{
+            state:{
+                attributes:{
+                    sameSite:"none",
+                    secure:true,
+                    httpOnly:true,
+                    path:"/"
+                }
+            }
+        },
+
+        sessionToken:{
+            attributes:{
+                samesite:"none",
+                secure:true,
+                httponly:true,
+                path:"/"
+            }
         }
     }
 });

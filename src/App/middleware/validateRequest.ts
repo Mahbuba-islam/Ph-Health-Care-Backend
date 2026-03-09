@@ -30,7 +30,7 @@ export const validateRequest = (zodSchema: ZodType) => {
     if (!parsedResult.success) {
       return next(parsedResult.error)
     }
-
+   
     req.body = parsedResult.data
     next()
   }

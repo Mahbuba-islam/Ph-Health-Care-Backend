@@ -3,52 +3,62 @@ import { prisma } from "../../../lib/prisma";
 import AppError from "../../errorHelpers/AppError";
 import { updateDoctorInterface } from "./doctor.interface";
 import { UserStatus } from "../../../generated/prisma/enums";
+import { IqueryParams } from "../../interfaces/query.interface";
+import { QueryBuilder } from "../../utilis/queryBuilder";
+import { Doctor, Prisma } from "../../../generated/prisma/client";
+import { doctorFilterableFields, doctorIncludeConfig, doctorSearchableFields } from "./doctor.constant";
 
-const getAllDoctors = async () => {
-    const results = await prisma.doctor.findMany({
-        where:{
-            isDeleted: false
-        },
-        orderBy:{
-            createdAt:"desc"
-        },
-        select:{
-            id:true,
-            name:true,
-            email:true,
-            profilePhoto:true,
-            address:true,
-            registrationNumber:true,
-            experience:true,
-            gender:true,
-            appointmentFee:true,
-            qualification:true,
-            currentWorkingPlace:true,
-            designayion:true,
-            createdAt:true,
-            updatedAt:true,
-            doctorSpecialities:{
-                select:{
-                   specility:{
-                        select:{
-                            id:true,
-                            title:true
-                        }
-                    }
-        }     },
-       
-    
-    }
-})
+const getAllDoctors = async (query : IqueryParams) => {
+    // const doctors = await prisma.doctor.findMany({
+    //     where: {
+    //         isDeleted: false,
+    //     },
+    //     include: {
+    //         user: true,
+    //         specialties: {
+    //             include: {
+    //                 specialty: true
+    //             }
+    //         }
+    //     }
+    // })
 
-// transform specialities(flaten structure)
-const doctors = results.map((doctor)=> ({
-    ...doctor,
-    doctorSpecialities:doctor.doctorSpecialities.map(s => s.specility)
-}))
-    return doctors
+    // // const query = new QueryBuilder().paginate().search().filter();
+    // return doctors;
+
+    const queryBuilder = new QueryBuilder<Doctor, Prisma.DoctorWhereInput, Prisma.DoctorInclude>(
+        prisma.doctor,
+        query,
+        {
+            searchableFields: doctorSearchableFields,
+            filterableFields: doctorFilterableFields,
+        }
+    )
+
+    const result = await queryBuilder
+        .search()
+        .filter()
+        .where({
+            isDeleted: false,
+        })
+        .include({
+            user: true,
+            // specialties: true,
+            doctorSpecialities: {
+                include:{
+                    specility: true
+                }
+            },
+        })
+        .dynamicInclude(doctorIncludeConfig)
+        .paginate()
+        .sort()
+        .fields()
+        .excute();
+
+        console.log(result);
+    return result;
 }
-
 
 
 

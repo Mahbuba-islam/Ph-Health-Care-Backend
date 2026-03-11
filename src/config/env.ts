@@ -35,6 +35,12 @@ interface EnvConfig {
     }
   // BETTER_AUTH_SESSION_TOKEN_EXPIRY: string;
   // BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE: string;
+  STRIPE:{
+    STRIPE_SECRET_KEY:string,
+    STRIPE_WEBHOOK_SECRET:string
+  }
+//   STRIPE_SECRET_KEY=sk_test_51T9m9h2VdjN9DoI7VQze2qNb4yXNhAYJA1IB5HOFP2hZ29IAsQpjIKEVWPAE9cqyYqUZ8JxM7X46rsnH4xAnX6Wl00bmGN8CEk
+// STRIPE_WEBHOOK_SECRET=whsec_5e4cd5537f3e0bd2db8388f546f5b5020d46e0fa93cd51de17aad5f5500e2a7b
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -60,6 +66,8 @@ const loadEnvVariables = (): EnvConfig => {
      "CLOUDINARY_CLOUD_NAME",
       "CLOUDINARY_API_KEY",
      "CLOUDINARY_API_SECRET",
+      "STRIPE_SECRET_KEY",
+    "STRIPE_WEBHOOK_SECRET"
     
     // "BETTER_AUTH_SESSION_TOKEN_EXPIRY",
     // "BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE"
@@ -99,7 +107,14 @@ const loadEnvVariables = (): EnvConfig => {
       CLOUDINARY_CLOUD_NAME:process.env.CLOUDINARY_CLOUD_NAME as string,
       CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
      CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
+    },
+   STRIPE:{
+       STRIPE_SECRET_KEY:process.env.STRIPE_SECRET_KEY as string,
+    STRIPE_WEBHOOK_SECRET:process.env.STRIPE_WEBHOOK_SECRET as string,
+     
     }
+
+
     // BETTER_AUTH_SESSION_TOKEN_EXPIRY: process.env.BETTER_AUTH_SESSION_TOKEN_EXPIRY as string,
     // BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE: process.env.BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE as string
 

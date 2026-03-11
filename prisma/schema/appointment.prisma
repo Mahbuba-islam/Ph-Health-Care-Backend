@@ -3,7 +3,7 @@ model Appointment {
     patientId        String            @db.Uuid
     doctorId         String            @db.Uuid
     doctorScheduleId String            @unique @db.Uuid
-    videoCallingId   String
+    videoCallingId   String            @unique @db.Uuid()
     status           AppointmentStatus @default(SCHEDULED)
     paymentStatus    PaymentStatus     @default(UNPAID)
     createdAt        DateTime          @default(now())

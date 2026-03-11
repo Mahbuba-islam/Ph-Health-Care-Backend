@@ -39,8 +39,7 @@ interface EnvConfig {
     STRIPE_SECRET_KEY:string,
     STRIPE_WEBHOOK_SECRET:string
   }
-//   STRIPE_SECRET_KEY=sk_test_51T9m9h2VdjN9DoI7VQze2qNb4yXNhAYJA1IB5HOFP2hZ29IAsQpjIKEVWPAE9cqyYqUZ8JxM7X46rsnH4xAnX6Wl00bmGN8CEk
-// STRIPE_WEBHOOK_SECRET=whsec_5e4cd5537f3e0bd2db8388f546f5b5020d46e0fa93cd51de17aad5f5500e2a7b
+
 }
 
 const loadEnvVariables = (): EnvConfig => {

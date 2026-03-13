@@ -87,6 +87,19 @@ export const auth = betterAuth({
                         }
                     })
 
+
+
+                    if(!user){
+                        console.error(`User with email ${email} not found. Cannot send verification OTP`)
+                        return
+                    }
+
+                    if(user && user.role === Role.SUPER_ADMIN){
+                        console.error(`User with email ${email} is a super admin. Skipping sending verification OTP`)
+                        return
+                    }
+
+
                     if(user && !user.emailVerified){
                     sendEmail({
                         to:email,
@@ -97,7 +110,9 @@ export const auth = betterAuth({
                             otp,
                         }
                     })
-                    }
+                    };
+
+                    
                 }
                 else if(type === "forget-password"){
                     const user = await prisma.user.findUnique({

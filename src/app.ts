@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import express, { Application, Request, Response } from "express";
 import { indexRoutes } from "./App/routes";
 import { globalErrorHandler } from "./App/middleware/globalErrorHandler";
@@ -8,6 +9,10 @@ import { auth } from "./lib/auth";
 import path from "node:path";
 import cors from "cors";
 import { envVars } from "./config/env";
+import { paymentControler } from "./App/modules/payment/payment.controler";
+import cron from "node-cron";
+
+import { appointmentService } from "./App/modules/appointments/appointment.service";
 
 const app: Application = express();
 
@@ -15,10 +20,9 @@ app.set("view engine", "ejs")
 app.set("views", path.resolve(process.cwd(), `src/app/templates`))
 
 
-app.post("/webhook", express.raw({type:"application/json"}), async(req:Request, res:Response)=> {
-  console.log("webhook received:", req.body);
-  res.status(200).json({received:true})
-})
+app.post("/webhook", express.raw({type:"application/json"}), 
+paymentControler.handlerStripeWebhookEvent)
+
 
 
 
@@ -41,6 +45,23 @@ app.use(express.urlencoded({extended:true}))
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, TypeScript + Express!');
 });
+
+
+//corn schdule
+
+cron.schedule("*/25 * * * *", async()=> {
+  try{
+   console.log("Running corn job to unpaid appointments");
+   await appointmentService.cancelUnpaidAppointments()
+  }
+ catch(error:any){
+  console.error("Error occured while canceling unpaid appointment", error.message)
+ }
+
+})
+
+
+
 
 app.use("/api/v1", indexRoutes)
 app.use(globalErrorHandler)

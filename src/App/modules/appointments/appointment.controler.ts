@@ -3,6 +3,7 @@ import status from "http-status";
 import { appointmentService } from "./appointment.service";
 import { sendResponse } from "../../../shared/sendResponsr";
 import { catchAsync } from "../../../shared/catchAsync";
+import { IqueryParams } from "../../interfaces/query.interface";
 
 const bookAppointment = catchAsync( async (req : Request, res : Response) => {
     const payload = req.body;
@@ -16,9 +17,13 @@ const bookAppointment = catchAsync( async (req : Request, res : Response) => {
     });
 });
 
+
+
+
+
 const getMyAppointments = catchAsync(async (req: Request, res: Response) => {
     const user = req.user;
-    const appointments = await appointmentService.getMyAppointments(user);
+    const appointments = await appointmentService.getMyAppointment(user);
     sendResponse(res, {
         success: true,
         httpStatusCode: status.OK,
@@ -26,6 +31,8 @@ const getMyAppointments = catchAsync(async (req: Request, res: Response) => {
         data: appointments
     });
 });
+
+
 
 const changeAppointmentStatus = catchAsync(async (req: Request, res: Response) => {
     const appointmentId = req.params.id;
@@ -41,6 +48,9 @@ const changeAppointmentStatus = catchAsync(async (req: Request, res: Response) =
     });
 });
 
+
+
+
 const getMySingleAppointment = catchAsync(async (req: Request, res: Response) => {
     const appointmentId = req.params.id;
     const user = req.user;
@@ -54,8 +64,13 @@ const getMySingleAppointment = catchAsync(async (req: Request, res: Response) =>
     });
 });
 
+
+
+
 const getAllAppointments = catchAsync(async (req: Request, res: Response) => {
-    const appointments = await appointmentService.getAllAppointments();
+    const query = req.query
+    const user = req.user
+    const appointments = await appointmentService.getAllAppointments(query as IqueryParams ,user);
     sendResponse(res, {
         success: true,
         httpStatusCode: status.OK,
@@ -63,6 +78,9 @@ const getAllAppointments = catchAsync(async (req: Request, res: Response) => {
         data: appointments
     });
 });
+
+
+
 
 const bookAppointmentWithPayLater = catchAsync(async (req: Request, res: Response) => {
     const payload = req.body;
@@ -76,6 +94,9 @@ const bookAppointmentWithPayLater = catchAsync(async (req: Request, res: Respons
     });
 });
 
+
+
+
 const initiatePayment = catchAsync(async (req: Request, res: Response) => {
     const appointmentId = req.params.id;
     const user = req.user;
@@ -88,6 +109,8 @@ const initiatePayment = catchAsync(async (req: Request, res: Response) => {
         data: paymentInfo
     });
 });
+
+
 
 export const AppointmentController = {
     bookAppointment,
